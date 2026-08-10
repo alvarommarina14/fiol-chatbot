@@ -19,21 +19,24 @@ public class WhatsAppClient {
 
     private final RestClient restClient;
     private final WhatsAppProperties properties;
+    private final RecipientNormalizer recipientNormalizer;
 
-    public WhatsAppClient(RestClient whatsAppRestClient, WhatsAppProperties properties) {
+    public WhatsAppClient(RestClient whatsAppRestClient, WhatsAppProperties properties,
+            RecipientNormalizer recipientNormalizer) {
         this.restClient = whatsAppRestClient;
         this.properties = properties;
+        this.recipientNormalizer = recipientNormalizer;
     }
 
     public void sendText(String toWaId, String body) {
-        send(TextMessageRequest.of(toWaId, body));
+        send(TextMessageRequest.of(recipientNormalizer.normalize(toWaId), body));
     }
 
     public void sendReplyButtons(String toWaId, String bodyText, List<ReplyButtonSpec> buttons) {
         List<ReplyButton> replyButtons = buttons.stream()
                 .map(b -> new ReplyButton("reply", new ButtonPayload(b.id(), b.title())))
                 .toList();
-        send(InteractiveMessageRequest.buttons(toWaId, bodyText, replyButtons));
+        send(InteractiveMessageRequest.buttons(recipientNormalizer.normalize(toWaId), bodyText, replyButtons));
     }
 
     private void send(Object payload) {
