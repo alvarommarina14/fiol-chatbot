@@ -9,5 +9,6 @@ public record WhatsAppProperties(
         String verifyToken,
         String appSecret,
         String apiVersion,
-        String graphBaseUrl) {
+        String graphBaseUrl,
+        boolean stripArMobileNine) {
 }
