@@ -96,6 +96,9 @@ public class WebhookController {
         if (waId == null || input == null) {
             return;
         }
+        // Message bodies are customer content, so only the sender id and message type are
+        // logged: enough to trace routing without recording what people actually wrote.
+        log.info("Inbound message from wa_id={} type={}", waId, message.type());
         conversationService.handle(waId, input);
     }
 
